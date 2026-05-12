@@ -1,9 +1,16 @@
-import { AppShell } from "../shell/components/app-shell";
+import { Building2 } from "lucide-react";
+import { AppShell } from "../../components/shell/app-shell";
+import { PageHeader } from "../dashboard/components/dashboard-header";
 
 export default async function Garage() {
     return (
-    <AppShell>
-            garage
-    </AppShell>
+        <AppShell>
+
+            <PageHeader
+                icon={Building2}
+                title="Garagens"
+                description="Visualize as garagens habilitadas para mensalistas digitais."
+            />
+        </AppShell>
     );
 }

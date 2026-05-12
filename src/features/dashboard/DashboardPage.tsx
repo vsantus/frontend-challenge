@@ -1,5 +1,5 @@
 import { Building2, Car } from "lucide-react";
-import { AppShell } from "../shell/components/app-shell";
+import { AppShell } from "../../components/shell/app-shell";
 import { DashboardFeatureCard } from "./components/dashboard-card";
 import { PageHeader } from "./components/dashboard-header";
 

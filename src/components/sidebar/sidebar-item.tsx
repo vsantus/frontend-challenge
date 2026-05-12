@@ -23,34 +23,23 @@ export function SidebarItem({
   return (
     <Link
       href={href}
+      aria-current={isActive ? "page" : undefined}
       className={`
-        relative overflow-hidden
-        flex items-center gap-3 rounded-lg
-        px-3 py-3 transition-all
+        group flex min-h-14 items-center gap-4 rounded-lg
+        px-4 py-3 transition-colors duration-200
         ${isActive
-          ? "bg-zinc-100 text-zinc-900"
-          : "text-zinc-700"
+          ? "bg-[#ECEDEF] text-zinc-950"
+          : "text-zinc-700 hover:bg-zinc-100"
         }
+        ${collapsed ? "justify-center px-0" : ""}
       `}
     >
       <span
         className={`
-          absolute left-0 top-1/2 h-6 w-1
-          -translate-y-1/2 rounded-r-full
-          transition-all duration-200
+          shrink-0 transition-colors duration-200
           ${isActive
-            ? "bg-[#7ad33e] opacity-100"
-            : "opacity-0"
-          }
-        `}
-      />
-
-      <span
-        className={`
-          shrink-0 transition-colors
-          ${isActive
-            ? "text-zinc-900"
-            : "text-zinc-600"
+            ? "text-zinc-950"
+            : "text-zinc-600 group-hover:text-zinc-800"
           }
         `}
       >
@@ -60,9 +49,9 @@ export function SidebarItem({
       {!collapsed && (
         <span
           className={`
-            text-[15px] font-medium transition-colors
+            text-[16px] font-medium transition-colors duration-200
             ${isActive
-              ? "text-zinc-900"
+              ? "text-zinc-950"
               : "text-zinc-700"
             }
           `}

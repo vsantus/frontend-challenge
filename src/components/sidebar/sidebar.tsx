@@ -50,7 +50,7 @@ export function Sidebar() {
 
       <div className="border-t border-zinc-200" />
 
-      <nav className="flex flex-col gap-2 p-4">
+      <nav className="flex flex-col gap-2 pt-4">
         <SidebarItem
           href="/garages"
           icon={<Building2 />}

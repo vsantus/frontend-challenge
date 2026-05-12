@@ -1,33 +1,35 @@
-type Props = {
+import { LucideIcon } from "lucide-react";
+
+type PageHeaderProps = {
   title: string;
-  description?: string;
+  description: string;
+  icon?: LucideIcon;
 };
 
 export function PageHeader({
   title,
   description,
-}: Props) {
+  icon: Icon,
+}: PageHeaderProps) {
   return (
-    <div className="space-y-4">
-      <h1
-        className="
-          text-3xl font-semibold
-          tracking-tight text-zinc-800 
-        "
-      >
-        {title}
-      </h1>
+    <header>
+      <div className="flex items-center gap-3">
+        {Icon && (
+          <Icon
+            size={44}
+            className="text-[#7ad33e]"
+            aria-hidden="true"
+          />
+        )}
 
-      {description && (
-        <p
-          className="
-            max-w-4xl text-lg
-            leading-relaxed text-zinc-600 mb-10 mt-10
-          "
-        >
-          {description}
-        </p>
-      )}
-    </div>
+        <h1 className="text-2xl font-[700] text-zinc-800">
+          {title}
+        </h1>
+      </div>
+
+      <p className="mt-1 text-lg text-zinc-500">
+        {description}
+      </p>
+    </header>
   );
 }

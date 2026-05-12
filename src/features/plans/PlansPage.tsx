@@ -1,7 +1,6 @@
 "use client";
 
 import { AppShell } from "../../components/shell/app-shell";
-import Image from "next/image";
 import { PageHeader } from "../dashboard/components/dashboard-header";
 import { Car } from "lucide-react";
 import { MaintenanceState } from "@/src/components/feedback/feedback-maintenance";

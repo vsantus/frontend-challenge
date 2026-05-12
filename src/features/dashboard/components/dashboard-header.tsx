@@ -22,12 +22,12 @@ export function PageHeader({
           />
         )}
 
-        <h1 className="text-2xl font-[700] text-zinc-800">
+        <h1 className="text-3xl font-[400] text-zinc-800">
           {title}
         </h1>
       </div>
 
-      <p className="mt-1 text-lg text-zinc-500">
+      <p className="mt-1 text-lg text-zinc-500 mb-10">
         {description}
       </p>
     </header>

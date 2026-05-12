@@ -37,7 +37,7 @@ export function DashboardFeatureCard({
               size-5 text-zinc-300
             "
                     />
-                    
+
                     <div className="text-[#7ad33e]">
                         {icon}
                     </div>
@@ -47,7 +47,7 @@ export function DashboardFeatureCard({
                             {title}
                         </h3>
 
-                        <p className="text-lg text-zinc-600">
+                        <p className="text-md text-zinc-600">
                             {description}
                         </p>
                     </div>

@@ -1,6 +1,7 @@
 import { Building2 } from "lucide-react";
 import { AppShell } from "../../components/shell/app-shell";
 import { PageHeader } from "../dashboard/components/dashboard-header";
+import { GaragePageContent } from "./components/garage-page-content";
 
 export default async function Garage() {
     return (
@@ -11,6 +12,8 @@ export default async function Garage() {
                 title="Garagens"
                 description="Visualize as garagens habilitadas para mensalistas digitais."
             />
+
+            <GaragePageContent />
         </AppShell>
     );
 }

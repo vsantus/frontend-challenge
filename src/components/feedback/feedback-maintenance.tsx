@@ -8,12 +8,12 @@ export function MaintenanceState({
   description,
 }: MaintenanceStateProps) {
   return (
-    <section className="mt-16 flex flex-col items-center gap-12 rounded-2xl bg-white p-8">
+    <section className="mt-2 flex flex-col items-center gap-12 rounded-2xl bg-white p-8">
       <Image
         src="/assets/feedback/feedback-acess.svg"
         alt="Página em construção"
-        width={440}
-        height={360}
+        width={300}
+        height={160}
         className="h-auto max-w-full"
       />
 

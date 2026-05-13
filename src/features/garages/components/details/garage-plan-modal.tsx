@@ -1,11 +1,28 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-import { createPortal } from "react-dom";
-import { X } from "lucide-react";
+import { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 
 import {
@@ -24,40 +41,62 @@ type GaragePlanModalProps = {
   onSubmit: (plan: GaragePlanFormValues) => void;
 };
 
-type GaragePlanFormState = {
-  description: string;
-  status: GaragePlan["status"];
-  vehicleType: string;
-  vacancies: string;
-  value: string;
-  cancellationValue: string;
-  startsAt: string;
-  endsAt: string;
-};
+const planFormSchema = z
+  .object({
+    description: z.string().trim().min(1, "Informe a descrição."),
+    status: z.enum(["active", "inactive"]),
+    vehicleType: z.string().min(1, "Selecione o tipo de veículo."),
+    vacancies: z.number().int().min(1, "Informe ao menos uma vaga."),
+    value: z.number().min(0, "Informe um valor válido."),
+    cancellationValue: z
+      .number()
+      .min(0, "Informe um valor de cancelamento válido."),
+    startsAt: z.string().min(1, "Informe o início da validade."),
+    endsAt: z.string().min(1, "Informe o fim da validade."),
+  })
+  .refine((values) => values.endsAt >= values.startsAt, {
+    message: "O fim deve ser posterior ao início.",
+    path: ["endsAt"],
+  });
 
-const defaultFormState: GaragePlanFormState = {
-  description: "",
-  status: "active",
-  vehicleType: "car",
-  vacancies: "1",
-  value: "0",
-  cancellationValue: "0",
-  startsAt: "2025-06-20",
-  endsAt: "",
-};
+type PlanFormValues = z.infer<typeof planFormSchema>;
 
-function getInitialFormState(plan?: GaragePlan | null): GaragePlanFormState {
+function getTodayDate() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function getInitialFormValues(plan?: GaragePlan | null): PlanFormValues {
   if (!plan) {
-    return defaultFormState;
+    return {
+      description: "",
+      status: "active",
+      vehicleType: "car",
+      vacancies: 1,
+      value: 0,
+      cancellationValue: 0,
+      startsAt: getTodayDate(),
+      endsAt: "",
+    };
   }
 
   return {
-    ...defaultFormState,
     description: plan.description,
     status: plan.status,
-    vacancies: String(plan.vacancies),
-    value: String(plan.value),
+    vehicleType: "car",
+    vacancies: plan.vacancies,
+    value: plan.value,
+    cancellationValue: 0,
+    startsAt: getTodayDate(),
+    endsAt: "",
   };
+}
+
+function FieldError({ message }: { message?: string }) {
+  if (!message) {
+    return null;
+  }
+
+  return <p className="mt-1 text-xs font-medium text-red-600">{message}</p>;
 }
 
 export function GaragePlanModal({
@@ -68,11 +107,17 @@ export function GaragePlanModal({
   onClose,
   onSubmit,
 }: GaragePlanModalProps) {
-  const [formState, setFormState] = useState<GaragePlanFormState>(
-    getInitialFormState(plan)
-  );
+  const {
+    control,
+    formState: { errors },
+    handleSubmit,
+    register,
+    reset,
+  } = useForm<PlanFormValues>({
+    resolver: zodResolver(planFormSchema),
+    defaultValues: getInitialFormValues(plan),
+  });
 
-  const isActive = formState.status === "active";
   const title = mode === "edit" ? "Editar Plano" : "Novo Plano";
   const description =
     mode === "edit"
@@ -80,191 +125,192 @@ export function GaragePlanModal({
       : "Preencha os dados para criar um novo plano.";
   const submitLabel = mode === "edit" ? "Salvar" : "Criar";
 
-  if (!open) {
-    return null;
-  }
+  useEffect(() => {
+    if (open) {
+      reset(getInitialFormValues(plan));
+    }
+  }, [open, plan, reset]);
 
-  function updateField(field: keyof GaragePlanFormState, value: string) {
-    setFormState((currentState) => ({
-      ...currentState,
-      [field]: value,
-    }));
-  }
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    const vacancies = Number(formState.vacancies);
+  function submitForm(values: PlanFormValues) {
     const occupied = plan?.occupied ?? 0;
 
     onSubmit({
       id: plan?.id ?? crypto.randomUUID(),
-      description: formState.description,
-      value: Number(formState.value),
-      vacancies,
+      description: values.description,
+      value: values.value,
+      vacancies: values.vacancies,
       occupied,
-      available: vacancies - occupied,
-      status: formState.status,
-      vehicleType: formState.vehicleType,
-      cancellationValue: Number(formState.cancellationValue),
-      startsAt: formState.startsAt,
-      endsAt: formState.endsAt,
+      available: values.vacancies - occupied,
+      status: values.status,
+      vehicleType: values.vehicleType,
+      cancellationValue: values.cancellationValue,
+      startsAt: values.startsAt,
+      endsAt: values.endsAt,
     });
   }
 
-  if (typeof document === "undefined") {
-    return null;
-  }
+  return (
+    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
+      <DialogContent>
+        <form onSubmit={handleSubmit(submitForm)}>
+          <DialogHeader>
+            <DialogTitle>{title}</DialogTitle>
+            <DialogDescription>{description}</DialogDescription>
+          </DialogHeader>
 
-  return createPortal(
-    <div className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-zinc-950/75 px-4 py-5 md:items-center md:px-6 md:py-8">
-      <form
-        onSubmit={handleSubmit}
-        className="relative min-h-full w-full rounded-lg bg-white p-5 shadow-xl md:min-h-0 md:max-w-[528px] md:p-6"
-      >
-        <div className="pr-10">
-          <h2 className="text-xl font-semibold leading-none text-zinc-900">
-            {title}
-          </h2>
-          <p className="mt-2 text-sm text-zinc-500">{description}</p>
-        </div>
-
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          onClick={onClose}
-          className="absolute right-5 top-5 text-zinc-700"
-          aria-label="Fechar modal de plano"
-          disabled={loading}
-        >
-          <X size={18} />
-        </Button>
-
-        <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-5 md:grid-cols-2">
-          <Input
-            id="plan-description"
-            label="Descrição"
-            placeholder="Digite a descrição do plano"
-            value={formState.description}
-            onChange={(event) => updateField("description", event.target.value)}
-            disabled={loading}
-            required
-          />
-
-          <div className="space-y-2">
-            <span className="block text-sm font-semibold text-zinc-950">
-              Status
-            </span>
-            <label className="flex h-11 items-center gap-3">
-              <Switch
-                checked={isActive}
+          <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-5 md:grid-cols-2">
+            <div>
+              <Input
+                id="plan-description"
+                label="Descrição"
+                placeholder="Digite a descrição do plano"
                 disabled={loading}
-                onCheckedChange={(checked) =>
-                  updateField("status", checked ? "active" : "inactive")
-                }
+                error={errors.description?.message}
+                {...register("description")}
               />
-              <span className="text-sm font-semibold text-green-700">
-                {isActive ? "Ativo" : "Inativo"}
+              <FieldError message={errors.description?.message} />
+            </div>
+
+            <div className="space-y-2">
+              <span className="block text-sm font-semibold text-zinc-950">
+                Status
               </span>
-            </label>
+              <Controller
+                control={control}
+                name="status"
+                render={({ field }) => (
+                  <label className="flex h-11 items-center gap-3">
+                    <Switch
+                      checked={field.value === "active"}
+                      disabled={loading}
+                      onCheckedChange={(checked) =>
+                        field.onChange(checked ? "active" : "inactive")
+                      }
+                    />
+                    <span className="text-sm font-semibold text-green-700">
+                      {field.value === "active" ? "Ativo" : "Inativo"}
+                    </span>
+                  </label>
+                )}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <span className="block text-sm font-semibold text-zinc-950">
+                Tipo de Veículo
+              </span>
+              <Controller
+                control={control}
+                name="vehicleType"
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    disabled={loading}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="car">Carro</SelectItem>
+                      <SelectItem value="motorcycle">Moto</SelectItem>
+                      <SelectItem value="truck">Caminhão</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              <FieldError message={errors.vehicleType?.message} />
+            </div>
+
+            <div>
+              <Input
+                id="plan-vacancies"
+                label="Total de Vagas"
+                type="number"
+                min={1}
+                disabled={loading}
+                error={errors.vacancies?.message}
+                {...register("vacancies", { valueAsNumber: true })}
+              />
+              <FieldError message={errors.vacancies?.message} />
+            </div>
+
+            <div>
+              <Input
+                id="plan-value"
+                label="Valor (R$)"
+                type="number"
+                min={0}
+                step="0.01"
+                disabled={loading}
+                error={errors.value?.message}
+                {...register("value", { valueAsNumber: true })}
+              />
+              <FieldError message={errors.value?.message} />
+            </div>
+
+            <div>
+              <Input
+                id="plan-cancellation-value"
+                label="Valor do Cancelamento (R$)"
+                type="number"
+                min={0}
+                step="0.01"
+                disabled={loading}
+                error={errors.cancellationValue?.message}
+                {...register("cancellationValue", { valueAsNumber: true })}
+              />
+              <FieldError message={errors.cancellationValue?.message} />
+            </div>
+
+            <div>
+              <Input
+                id="plan-starts-at"
+                label="Início da Validade"
+                type="date"
+                disabled={loading}
+                error={errors.startsAt?.message}
+                {...register("startsAt")}
+              />
+              <FieldError message={errors.startsAt?.message} />
+            </div>
+
+            <div>
+              <Input
+                id="plan-ends-at"
+                label="Fim da Validade"
+                type="date"
+                disabled={loading}
+                error={errors.endsAt?.message}
+                {...register("endsAt")}
+              />
+              <FieldError message={errors.endsAt?.message} />
+            </div>
           </div>
 
-          <label className="space-y-2">
-            <span className="block text-sm font-semibold text-zinc-950">
-              Tipo de Veículo
-            </span>
-            <select
-              value={formState.vehicleType}
-              disabled={loading}
-              onChange={(event) => updateField("vehicleType", event.target.value)}
-              className="h-11 w-full rounded-md border border-zinc-200 bg-white px-4 text-sm text-zinc-900 outline-none transition focus-visible:ring-2 focus-visible:ring-[#7ad33e] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+          <DialogFooter className="mt-6">
+            <DialogClose asChild>
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                disabled={loading}
+              >
+                Cancelar
+              </Button>
+            </DialogClose>
+
+            <Button
+              type="submit"
+              size="lg"
+              loading={loading}
+              className="bg-[#7ad33e] text-white hover:bg-[#6bc733]"
             >
-              <option value="car">Carro</option>
-              <option value="motorcycle">Moto</option>
-              <option value="truck">Caminhão</option>
-            </select>
-          </label>
-
-          <Input
-            id="plan-vacancies"
-            label="Total de Vagas"
-            type="number"
-            min={0}
-            value={formState.vacancies}
-            onChange={(event) => updateField("vacancies", event.target.value)}
-            disabled={loading}
-            required
-          />
-
-          <Input
-            id="plan-value"
-            label="Valor (R$)"
-            type="number"
-            min={0}
-            step="0.01"
-            value={formState.value}
-            onChange={(event) => updateField("value", event.target.value)}
-            disabled={loading}
-            required
-          />
-
-          <Input
-            id="plan-cancellation-value"
-            label="Valor do Cancelamento (R$)"
-            type="number"
-            min={0}
-            step="0.01"
-            value={formState.cancellationValue}
-            onChange={(event) =>
-              updateField("cancellationValue", event.target.value)
-            }
-            disabled={loading}
-          />
-
-          <Input
-            id="plan-starts-at"
-            label="Início da Validade"
-            type="date"
-            value={formState.startsAt}
-            onChange={(event) => updateField("startsAt", event.target.value)}
-            disabled={loading}
-            required
-          />
-
-          <Input
-            id="plan-ends-at"
-            label="Fim da Validade"
-            type="date"
-            value={formState.endsAt}
-            onChange={(event) => updateField("endsAt", event.target.value)}
-            disabled={loading}
-            required
-          />
-        </div>
-
-        <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-          <Button
-            type="button"
-            variant="outline"
-            size="lg"
-            onClick={onClose}
-            disabled={loading}
-          >
-            Cancelar
-          </Button>
-
-          <Button
-            type="submit"
-            size="lg"
-            loading={loading}
-            className="bg-[#7ad33e] text-white hover:bg-[#6bc733]"
-          >
-            {submitLabel}
-          </Button>
-        </div>
-      </form>
-    </div>,
-    document.body
+              {submitLabel}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }

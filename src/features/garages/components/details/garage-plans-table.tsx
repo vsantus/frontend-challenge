@@ -1,5 +1,6 @@
 import { Car, SquarePen } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -22,10 +23,10 @@ const statusLabel = {
   inactive: "Inativo",
 };
 
-const statusBadgeClassName = {
-  active: "bg-green-50 text-green-700 ring-green-200",
-  inactive: "bg-yellow-50 text-yellow-700 ring-yellow-200",
-};
+const statusBadgeVariant = {
+  active: "success",
+  inactive: "warning",
+} as const;
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("pt-BR", {
@@ -96,11 +97,9 @@ export function GaragePlansTable({
               </TableCell>
 
               <TableCell className="px-4 py-3">
-                <span
-                  className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ring-1 ${statusBadgeClassName[plan.status]}`}
-                >
+                <Badge variant={statusBadgeVariant[plan.status]}>
                   {statusLabel[plan.status]}
-                </span>
+                </Badge>
               </TableCell>
 
               <TableCell className="px-4 py-3">

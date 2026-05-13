@@ -20,6 +20,14 @@ type GarageDetailsPageProps = {
 };
 
 export function GarageDetailsPage({ garageId }: GarageDetailsPageProps) {
+    return (
+        <AuthGuard>
+            <GarageDetailsContent garageId={garageId} />
+        </AuthGuard>
+    );
+}
+
+function GarageDetailsContent({ garageId }: GarageDetailsPageProps) {
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
@@ -52,70 +60,62 @@ export function GarageDetailsPage({ garageId }: GarageDetailsPageProps) {
             : null;
 
     if (isLoading) {
-        return (
-            <AuthGuard>
-                <GarageDetailsPageSkeleton />
-            </AuthGuard>
-        );
+        return <GarageDetailsPageSkeleton />;
     }
 
     if (hasError || !garage) {
         return (
-            <AuthGuard>
-                <div
-                    className={`fixed inset-0 z-50 bg-zinc-950/75 transition-opacity duration-300 ease-out ${isVisible ? "opacity-100" : "opacity-0"}`}
-                >
-                    <main
-                        className={`
-                            fixed inset-y-0 right-0 left-0 md:left-20
-                            flex items-center justify-center
-                            overflow-y-auto bg-white px-4 py-5 md:px-8 md:py-6
-                            shadow-[-18px_0_32px_rgba(15,23,42,0.28)]
-                            transition-transform duration-300 ease-out
-                            ${isVisible ? "translate-x-0" : "translate-x-full"}
-                        `}
-                    >
-                        <p className="text-sm font-medium text-red-600">
-                            Não foi possível carregar os dados da garagem.
-                        </p>
-                    </main>
-                </div>
-            </AuthGuard>
-        );
-    }
-
-    return (
-        <AuthGuard>
             <div
                 className={`fixed inset-0 z-50 bg-zinc-950/75 transition-opacity duration-300 ease-out ${isVisible ? "opacity-100" : "opacity-0"}`}
             >
                 <main
                     className={`
                         fixed inset-y-0 right-0 left-0 md:left-20
+                        flex items-center justify-center
                         overflow-y-auto bg-white px-4 py-5 md:px-8 md:py-6
                         shadow-[-18px_0_32px_rgba(15,23,42,0.28)]
-                        transition-transform duration-500 ease-out
+                        transition-transform duration-300 ease-out
                         ${isVisible ? "translate-x-0" : "translate-x-full"}
                     `}
                 >
-                    <GarageDetailsHeader garage={garage} />
-
-                    <div className="mt-6">
-                        <GarageInfoTabs />
-                    </div>
-
-                    <section className="mt-5 flex flex-col items-stretch gap-4 md:flex-row md:items-center">
-                        <GarageStatsCards garage={garage} />
-
-                        <GarageQRCode />
-                    </section>
-
-                    <GaragePlansPanel
-                        garageId={garageId}
-                        plans={garage.plans}
-                    />
+                    <p className="text-sm font-medium text-red-600">
+                        Não foi possível carregar os dados da garagem.
+                    </p>
                 </main>
             </div>
-        </AuthGuard>
+        );
+    }
+
+    return (
+        <div
+            className={`fixed inset-0 z-50 bg-zinc-950/75 transition-opacity duration-300 ease-out ${isVisible ? "opacity-100" : "opacity-0"}`}
+        >
+            <main
+                className={`
+                    fixed inset-y-0 right-0 left-0 md:left-20
+                    overflow-y-auto bg-white px-4 py-5 md:px-8 md:py-6
+                    shadow-[-18px_0_32px_rgba(15,23,42,0.28)]
+                    transition-transform duration-500 ease-out
+                    ${isVisible ? "translate-x-0" : "translate-x-full"}
+                `}
+            >
+                <GarageDetailsHeader garage={garage} />
+
+                <div className="mt-6">
+                    <GarageInfoTabs />
+                </div>
+
+                <section className="mt-5 flex flex-col items-stretch gap-4 md:flex-row md:items-center">
+                    <GarageStatsCards garage={garage} />
+
+                    <GarageQRCode />
+                </section>
+
+                <GaragePlansPanel
+                    garageId={garageId}
+                    plans={garage.plans}
+                />
+            </main>
+        </div>
     );
 }

@@ -1,10 +1,7 @@
+import { Skeleton } from "@/components/ui/skeleton";
+
 function SkeletonBlock({ className }: { className: string }) {
-  return (
-    <div
-      aria-hidden="true"
-      className={`animate-pulse rounded-md bg-zinc-200 ${className}`}
-    />
-  );
+  return <Skeleton className={className} />;
 }
 
 export function DashboardPageSkeleton() {

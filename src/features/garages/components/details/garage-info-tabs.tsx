@@ -1,15 +1,13 @@
-import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function GarageInfoTabs() {
   return (
-    <div className="h-12 rounded-t-md border border-b-0 border-zinc-200 bg-zinc-100">
-      <Button
-        type="button"
-        variant="ghost"
-        className="h-full rounded-none border-x-transparent border-t-transparent border-b-green-500 bg-white px-5 text-sm font-medium text-zinc-800 hover:bg-white"
-      >
-        Mensalista Digital
-      </Button>
-    </div>
+    <Tabs value="monthly-digital">
+      <TabsList className="h-12">
+        <TabsTrigger value="monthly-digital">
+          Mensalista Digital
+        </TabsTrigger>
+      </TabsList>
+    </Tabs>
   );
 }

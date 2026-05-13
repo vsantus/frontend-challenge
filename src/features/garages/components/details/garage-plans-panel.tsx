@@ -1,14 +1,10 @@
 "use client";
 
-import { useState } from "react";
-
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { UnavailableState } from "@/src/components/feedback/feedback-unavailable";
 
 import { GaragePlan } from "../../types/garage.details";
-import {
-  GaragePlansMenu,
-  GaragePlansMenuItem,
-} from "./garage-plans-menu";
+import { GaragePlansMenu } from "./garage-plans-menu";
 import { GaragePlansSection } from "./garage-plans-section";
 
 type GaragePlansPanelProps = {
@@ -20,26 +16,31 @@ export function GaragePlansPanel({
   garageId,
   plans,
 }: GaragePlansPanelProps) {
-  const [activeItem, setActiveItem] =
-    useState<GaragePlansMenuItem>("plans");
-
-  const unavailableTitle =
-    activeItem === "discounts"
-      ? "Descontos indisponíveis"
-      : "Configurações indisponíveis";
-
   return (
-    <section className="mt-5 flex flex-col overflow-hidden rounded-lg border border-zinc-200 bg-white md:flex-row">
-      <GaragePlansMenu activeItem={activeItem} onSelectItem={setActiveItem} />
+    <Tabs
+      defaultValue="plans"
+      orientation="vertical"
+      className="mt-5 flex flex-col overflow-hidden rounded-lg border border-zinc-200 bg-white md:flex-row"
+    >
+      <GaragePlansMenu />
 
-      {activeItem === "plans" ? (
+      <TabsContent value="plans" className="m-0 min-w-0 flex-1">
         <GaragePlansSection garageId={garageId} plans={plans} />
-      ) : (
+      </TabsContent>
+
+      <TabsContent value="discounts" className="m-0 min-w-0 flex-1">
         <UnavailableState
-          title={unavailableTitle}
+          title="Descontos indisponíveis"
           description="Esta função ainda não está disponível para esta garagem."
         />
-      )}
-    </section>
+      </TabsContent>
+
+      <TabsContent value="settings" className="m-0 min-w-0 flex-1">
+        <UnavailableState
+          title="Configurações indisponíveis"
+          description="Esta função ainda não está disponível para esta garagem."
+        />
+      </TabsContent>
+    </Tabs>
   );
 }

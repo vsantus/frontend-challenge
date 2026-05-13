@@ -1,3 +1,5 @@
+import { AuthGuard } from "@/src/features/auth/components/auth-guard";
+
 import { Sidebar } from "../sidebar/sidebar";
 import { Topbar } from "../topbar/topbar";
 
@@ -11,16 +13,18 @@ export function AppShell({
   children,
 }: Props) {
   return (
-    <div className="flex min-h-screen bg-white">
-      <Sidebar />
+    <AuthGuard>
+      <div className="flex min-h-screen bg-white">
+        <Sidebar />
 
-      <div className="flex flex-1 flex-col">
-        <Topbar />
+        <div className="flex flex-1 flex-col">
+          <Topbar />
 
-        <main className="flex-1 p-8">
-          {children}
-        </main>
+          <main className="flex-1 p-8">
+            {children}
+          </main>
+        </div>
       </div>
-    </div>
+    </AuthGuard>
   );
 }

@@ -2,9 +2,13 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
+import { authenticate, AuthError } from "@/src/services/auth.services";
+
 import { loginSchema, LoginSchema } from "../schema";
+import { hasValidSession, saveSession } from "../utils/session";
 
 export function useLoginForm() {
     const router = useRouter();
@@ -22,31 +26,27 @@ export function useLoginForm() {
         },
     });
 
-    async function onSubmit(data: LoginSchema) {
-        // mock delay api
-        await new Promise((resolve) =>
-            setTimeout(resolve, 2000)
-        );
-
-        const isValidUser =
-            data.username === "estapar" &&
-            data.password === "@estapar@";
-
-        if (!isValidUser) {
-            setError("root", {
-                message: "Usuário ou senha inválidos",
-            });
-
-            return;
+    useEffect(() => {
+        if (hasValidSession()) {
+            router.replace("/dashboard");
         }
+    }, [router]);
 
-        // mock token
-        localStorage.setItem(
-            "token",
-            "fake-jwt-token"
-        );
+    async function onSubmit(data: LoginSchema) {
+        try {
+            const authData = await authenticate(data);
 
-        router.push("/dashboard");
+            saveSession(authData);
+
+            router.push("/dashboard");
+        } catch (error) {
+            setError("root", {
+                message:
+                    error instanceof AuthError
+                        ? error.message
+                        : "Não foi possível autenticar. Tente novamente.",
+            });
+        }
     }
 
     return {

@@ -1,5 +1,6 @@
 "use client";
 
+import { AuthGuard } from "../auth/components/auth-guard";
 import { garageDetailsMock } from "./data/garage-details.mock";
 import { garagesMock } from "./data/garage.mock";
 
@@ -25,6 +26,7 @@ export function GarageDetailsPage({ garageId }: GarageDetailsPageProps) {
     };
 
     return (
+        <AuthGuard>
         <div className="fixed inset-0 z-50 bg-zinc-950/75">
             <main className="fixed inset-y-0 right-0 left-20 overflow-y-auto bg-white px-8 py-6 shadow-[-18px_0_32px_rgba(15,23,42,0.28)]">
                 <GarageDetailsHeader garage={garage} />
@@ -42,5 +44,6 @@ export function GarageDetailsPage({ garageId }: GarageDetailsPageProps) {
                 <GaragePlansPanel garageId={garageId} plans={garage.plans} />
             </main>
         </div>
+        </AuthGuard>
     );
 }

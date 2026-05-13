@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/card";
 import { useLoginForm } from "../hooks/useLoginform";
 
-
 export const LoginPage = () => {
     const {
         register,
@@ -67,6 +66,12 @@ export const LoginPage = () => {
                             disabled={isSubmitting}
                             {...register("password")}
                         />
+
+                        {errors.root?.message && (
+                            <p className="rounded-md bg-red-50 px-3 py-2 text-sm font-medium text-red-600">
+                                {errors.root.message}
+                            </p>
+                        )}
 
                         <Button
                             type="submit"

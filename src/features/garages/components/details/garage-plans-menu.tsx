@@ -29,7 +29,7 @@ const menuItems = [
 export function GaragePlansMenu() {
   return (
     <aside className="w-full shrink-0 bg-zinc-50 md:w-[168px]">
-      <TabsList className="flex rounded-none border-0 bg-transparent md:block md:py-1">
+      <TabsList className="flex overflow-x-auto overflow-y-hidden rounded-none border-0 bg-transparent md:block md:py-1">
         {menuItems.map((item) => {
           const Icon = item.icon;
 

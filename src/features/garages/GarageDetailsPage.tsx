@@ -17,18 +17,33 @@ import { GarageStatsCards } from "./components/details/garage-stats-cards";
 
 type GarageDetailsPageProps = {
     garageId: string;
+    isClosing?: boolean;
+    onClose?: () => void;
 };
 
-export function GarageDetailsPage({ garageId }: GarageDetailsPageProps) {
+export function GarageDetailsPage({
+    garageId,
+    isClosing = false,
+    onClose,
+}: GarageDetailsPageProps) {
     return (
         <AuthGuard>
-            <GarageDetailsContent garageId={garageId} />
+            <GarageDetailsContent
+                garageId={garageId}
+                isClosing={isClosing}
+                onClose={onClose}
+            />
         </AuthGuard>
     );
 }
 
-function GarageDetailsContent({ garageId }: GarageDetailsPageProps) {
+function GarageDetailsContent({
+    garageId,
+    isClosing = false,
+    onClose,
+}: GarageDetailsPageProps) {
     const [isVisible, setIsVisible] = useState(false);
+    const isOpen = isVisible && !isClosing;
 
     useEffect(() => {
         const frame = requestAnimationFrame(() => {
@@ -66,7 +81,7 @@ function GarageDetailsContent({ garageId }: GarageDetailsPageProps) {
     if (hasError || !garage) {
         return (
             <div
-                className={`fixed inset-0 z-50 bg-zinc-950/75 transition-opacity duration-300 ease-out ${isVisible ? "opacity-100" : "opacity-0"}`}
+                className={`fixed inset-0 z-50 bg-zinc-950/75 transition-opacity duration-300 ease-out ${isOpen ? "opacity-100" : "opacity-0"}`}
             >
                 <main
                     className={`
@@ -75,7 +90,7 @@ function GarageDetailsContent({ garageId }: GarageDetailsPageProps) {
                         overflow-y-auto bg-white px-4 py-5 md:px-8 md:py-6
                         shadow-[-18px_0_32px_rgba(15,23,42,0.28)]
                         transition-transform duration-300 ease-out
-                        ${isVisible ? "translate-x-0" : "translate-x-full"}
+                        ${isOpen ? "translate-x-0" : "translate-x-full"}
                     `}
                 >
                     <p className="text-sm font-medium text-red-600">
@@ -88,7 +103,7 @@ function GarageDetailsContent({ garageId }: GarageDetailsPageProps) {
 
     return (
         <div
-            className={`fixed inset-0 z-50 bg-zinc-950/75 transition-opacity duration-300 ease-out ${isVisible ? "opacity-100" : "opacity-0"}`}
+            className={`fixed inset-0 z-50 bg-zinc-950/75 transition-opacity duration-300 ease-out ${isOpen ? "opacity-100" : "opacity-0"}`}
         >
             <main
                 className={`
@@ -96,10 +111,10 @@ function GarageDetailsContent({ garageId }: GarageDetailsPageProps) {
                     overflow-y-auto bg-white px-4 py-5 md:px-8 md:py-6
                     shadow-[-18px_0_32px_rgba(15,23,42,0.28)]
                     transition-transform duration-500 ease-out
-                    ${isVisible ? "translate-x-0" : "translate-x-full"}
+                    ${isOpen ? "translate-x-0" : "translate-x-full"}
                 `}
             >
-                <GarageDetailsHeader garage={garage} />
+                <GarageDetailsHeader garage={garage} onClose={onClose} />
 
                 <div className="mt-6">
                     <GarageInfoTabs />

@@ -7,9 +7,13 @@ import { GarageDetails } from "../../types/garage.details";
 
 type GarageDetailsHeaderProps = {
   garage: GarageDetails;
+  onClose?: () => void;
 };
 
-export function GarageDetailsHeader({ garage }: GarageDetailsHeaderProps) {
+export function GarageDetailsHeader({
+  garage,
+  onClose,
+}: GarageDetailsHeaderProps) {
   return (
     <header className="relative pr-10">
       <div>
@@ -53,16 +57,29 @@ export function GarageDetailsHeader({ garage }: GarageDetailsHeaderProps) {
         </div>
       </div>
 
-      <Button
-        asChild
-        variant="ghost"
-        size="icon"
-        className="absolute right-0 top-0 text-zinc-900"
-      >
-        <Link href="/garages" aria-label="Fechar detalhes da garagem">
+      {onClose ? (
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="absolute right-0 top-0 text-zinc-900"
+          onClick={onClose}
+          aria-label="Fechar detalhes da garagem"
+        >
           <X size={20} />
-        </Link>
-      </Button>
+        </Button>
+      ) : (
+        <Button
+          asChild
+          variant="ghost"
+          size="icon"
+          className="absolute right-0 top-0 text-zinc-900"
+        >
+          <Link href="/garages" aria-label="Fechar detalhes da garagem">
+            <X size={20} />
+          </Link>
+        </Button>
+      )}
     </header>
   );
 }

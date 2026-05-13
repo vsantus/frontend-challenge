@@ -22,6 +22,11 @@ const statusLabel = {
   inactive: "Inativo",
 };
 
+const statusBadgeClassName = {
+  active: "bg-green-50 text-green-700 ring-green-200",
+  inactive: "bg-yellow-50 text-yellow-700 ring-yellow-200",
+};
+
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
@@ -83,7 +88,9 @@ export function GaragePlansTable({
               <TableCell className="px-4 py-3">{plan.available}</TableCell>
 
               <TableCell className="px-4 py-3">
-                <span className="inline-flex rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-500">
+                <span
+                  className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ring-1 ${statusBadgeClassName[plan.status]}`}
+                >
                   {statusLabel[plan.status]}
                 </span>
               </TableCell>

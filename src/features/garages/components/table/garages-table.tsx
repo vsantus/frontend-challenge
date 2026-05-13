@@ -22,9 +22,9 @@ export function GaragesTable({
     const hasGarages = garages.length > 0;
 
     return (
-        <div className="w-full overflow-x-auto">
-            <Table>
-                <TableHeader>
+        <div className="w-full">
+            <Table className="block md:table">
+                <TableHeader className="hidden md:table-header-group">
                     <TableRow className="border-b-[5px] border-zinc-300 hover:bg-zinc-50">
                         <TableHead className="w-[90px] text-xs font-medium text-zinc-500">
                             Código
@@ -52,7 +52,7 @@ export function GaragesTable({
                     </TableRow>
                 </TableHeader>
 
-                <TableBody>
+                <TableBody className="block md:table-row-group">
                     {hasGarages ? (
                         garages.map((garage) => (
                             <GaragesTableRow

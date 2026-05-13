@@ -20,7 +20,7 @@ export function GaragesTableHeader({
     onMonthlyDigitalChange,
 }: GaragesTableHeaderProps) {
     return (
-        <div className="flex items-center justify-between border-zinc-200 px-4 py-3">
+        <div className="flex flex-col gap-3 border-zinc-200 px-2 py-2 md:flex-row md:items-center md:justify-between md:px-4 md:py-3">
             <div className="flex items-center gap-2">
                 <Switch
                     checked={monthlyDigitalEnabled}
@@ -34,11 +34,11 @@ export function GaragesTableHeader({
                 </span>
             </div>
 
-            <span className="text-sm text-zinc-500">
+            <span className="text-sm text-zinc-500 md:text-center">
                 {total} registros
             </span>
 
-            <div className="relative w-[220px]">
+            <div className="relative w-full md:w-[220px]">
                 <Search
                     size={16}
                     className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"

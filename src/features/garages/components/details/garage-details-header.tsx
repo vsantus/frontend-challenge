@@ -13,7 +13,7 @@ export function GarageDetailsHeader({ garage }: GarageDetailsHeaderProps) {
   return (
     <header className="relative pr-10">
       <div>
-        <div className="flex items-center gap-6">
+        <div className="flex items-start gap-4 md:items-center md:gap-6">
           <Building2
             size={34}
             className="shrink-0 text-zinc-900"
@@ -21,7 +21,7 @@ export function GarageDetailsHeader({ garage }: GarageDetailsHeaderProps) {
             aria-hidden="true"
           />
 
-          <h1 className="text-[30px] font-bold leading-none text-zinc-900">
+          <h1 className="text-2xl font-bold leading-tight text-zinc-900 md:text-[30px] md:leading-none">
             {garage.name}
           </h1>
         </div>
@@ -30,8 +30,8 @@ export function GarageDetailsHeader({ garage }: GarageDetailsHeaderProps) {
           Código: {garage.code} 
         </p>
 
-        <div className="mt-8 space-y-4 text-[15px] leading-none text-zinc-500">
-          <p className="flex items-center gap-3">
+        <div className="mt-8 space-y-4 text-[15px] leading-snug text-zinc-500 md:leading-none">
+          <p className="flex items-start gap-3 md:items-center">
             <MapPin
               size={21}
               className="shrink-0 text-zinc-500"
@@ -40,7 +40,7 @@ export function GarageDetailsHeader({ garage }: GarageDetailsHeaderProps) {
             <span>{garage.address}</span>
           </p>
 
-          <p className="flex items-center gap-3">
+          <p className="flex items-start gap-3 md:items-center">
             <Building
               size={21}
               className="shrink-0 text-zinc-500"

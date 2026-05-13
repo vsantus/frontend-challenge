@@ -29,7 +29,7 @@ export function GaragePlansPanel({
       : "Configurações indisponíveis";
 
   return (
-    <section className="mt-5 flex overflow-hidden rounded-lg border border-zinc-200 bg-white">
+    <section className="mt-5 flex flex-col overflow-hidden rounded-lg border border-zinc-200 bg-white md:flex-row">
       <GaragePlansMenu activeItem={activeItem} onSelectItem={setActiveItem} />
 
       {activeItem === "plans" ? (

@@ -28,11 +28,11 @@ const statsCards = [
 
 export function GarageStatsCards({ garage }: GarageStatsCardsProps) {
   return (
-    <div className="grid flex-1 grid-cols-3 gap-4">
+    <div className="grid flex-1 grid-cols-1 gap-4 sm:grid-cols-3">
       {statsCards.map((card) => (
         <Card
           key={card.label}
-          className="h-[96px] rounded-lg px-6 py-5"
+          className="min-h-[96px] rounded-lg px-6 py-5"
         >
           <p className="text-sm font-medium text-zinc-500">{card.label}</p>
 

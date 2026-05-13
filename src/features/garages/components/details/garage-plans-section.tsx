@@ -119,8 +119,8 @@ export function GaragePlansSection({
   }
 
   return (
-    <div className="flex-1 bg-white px-6 py-5">
-      <div className="mb-5 flex items-center justify-between">
+    <div className="min-w-0 flex-1 bg-white px-4 py-5 md:px-6">
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-base font-medium text-zinc-900">
           Planos Disponíveis
         </h2>
@@ -130,7 +130,7 @@ export function GaragePlansSection({
           variant="outline"
           size="lg"
           onClick={handleCreatePlan}
-          className="border-green-500 px-3 text-green-600 hover:bg-green-50 hover:text-green-600"
+          className="w-full border-green-500 px-3 text-green-600 hover:bg-green-50 hover:text-green-600 sm:w-auto"
         >
           <Plus size={16} />
           Novo Plano

@@ -36,8 +36,8 @@ export function GaragePlansMenu({
   onSelectItem,
 }: GaragePlansMenuProps) {
   return (
-    <aside className="w-[168px] shrink-0 bg-zinc-50">
-      <nav className="py-1">
+    <aside className="w-full shrink-0 bg-zinc-50 md:w-[168px]">
+      <nav className="flex overflow-x-auto md:block md:py-1">
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = item.id === activeItem;
@@ -50,10 +50,10 @@ export function GaragePlansMenu({
               size="lg"
               onClick={() => onSelectItem(item.id)}
               className={`
-                h-11 w-full justify-start gap-3 rounded-none border-l-4 px-4 text-sm
+                h-11 min-w-max flex-1 justify-center gap-3 rounded-none border-b-4 px-4 text-sm md:w-full md:justify-start md:border-b-0 md:border-l-4
                 ${
                   isActive
-                    ? "border-y-transparent border-r-transparent border-l-[#7ad33e] bg-white font-semibold text-zinc-800 hover:bg-white"
+                    ? "border-x-transparent border-t-transparent border-b-[#7ad33e] bg-white font-semibold text-zinc-800 hover:bg-white md:border-y-transparent md:border-r-transparent md:border-l-[#7ad33e]"
                     : "border-transparent text-zinc-700 hover:bg-white"
                 }
               `}

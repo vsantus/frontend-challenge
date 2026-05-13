@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -111,11 +112,15 @@ export function GaragePlanModal({
     });
   }
 
-  return (
-    <div className="fixed inset-0 z-[70] flex items-center justify-center bg-zinc-950/75 px-6 py-8">
+  if (typeof document === "undefined") {
+    return null;
+  }
+
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-zinc-950/75 px-4 py-5 md:items-center md:px-6 md:py-8">
       <form
         onSubmit={handleSubmit}
-        className="relative w-full max-w-[528px] rounded-lg bg-white p-6 shadow-xl"
+        className="relative min-h-full w-full rounded-lg bg-white p-5 shadow-xl md:min-h-0 md:max-w-[528px] md:p-6"
       >
         <div className="pr-10">
           <h2 className="text-xl font-semibold leading-none text-zinc-900">
@@ -136,7 +141,7 @@ export function GaragePlanModal({
           <X size={18} />
         </Button>
 
-        <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-5">
+        <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-5 md:grid-cols-2">
           <Input
             id="plan-description"
             label="Descrição"
@@ -238,7 +243,7 @@ export function GaragePlanModal({
           />
         </div>
 
-        <div className="mt-6 flex justify-end gap-2">
+        <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <Button
             type="button"
             variant="outline"
@@ -259,6 +264,7 @@ export function GaragePlanModal({
           </Button>
         </div>
       </form>
-    </div>
+    </div>,
+    document.body
   );
 }

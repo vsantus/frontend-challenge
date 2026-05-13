@@ -34,8 +34,8 @@ export function GaragePlansTable({
   onEditPlan,
 }: GaragePlansTableProps) {
   return (
-    <div className="overflow-hidden rounded-lg border border-zinc-200">
-      <Table>
+    <div className="overflow-x-auto rounded-lg border border-zinc-200">
+      <Table className="min-w-[760px]">
         <TableHeader className="bg-white">
           <TableRow className="border-b border-zinc-200 text-zinc-800 hover:bg-white">
             <TableHead className="px-4 py-3 font-semibold text-zinc-800">

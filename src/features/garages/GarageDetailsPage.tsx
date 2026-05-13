@@ -67,9 +67,9 @@ export function GarageDetailsPage({ garageId }: GarageDetailsPageProps) {
                 >
                     <main
                         className={`
-                            fixed inset-y-0 right-0 left-20
+                            fixed inset-y-0 right-0 left-0 md:left-20
                             flex items-center justify-center
-                            overflow-y-auto bg-white px-8 py-6
+                            overflow-y-auto bg-white px-4 py-5 md:px-8 md:py-6
                             shadow-[-18px_0_32px_rgba(15,23,42,0.28)]
                             transition-transform duration-300 ease-out
                             ${isVisible ? "translate-x-0" : "translate-x-full"}
@@ -91,8 +91,8 @@ export function GarageDetailsPage({ garageId }: GarageDetailsPageProps) {
             >
                 <main
                     className={`
-                        fixed inset-y-0 right-0 left-20
-                        overflow-y-auto bg-white px-8 py-6
+                        fixed inset-y-0 right-0 left-0 md:left-20
+                        overflow-y-auto bg-white px-4 py-5 md:px-8 md:py-6
                         shadow-[-18px_0_32px_rgba(15,23,42,0.28)]
                         transition-transform duration-500 ease-out
                         ${isVisible ? "translate-x-0" : "translate-x-full"}
@@ -104,7 +104,7 @@ export function GarageDetailsPage({ garageId }: GarageDetailsPageProps) {
                         <GarageInfoTabs />
                     </div>
 
-                    <section className="mt-5 flex items-center gap-4">
+                    <section className="mt-5 flex flex-col items-stretch gap-4 md:flex-row md:items-center">
                         <GarageStatsCards garage={garage} />
 
                         <GarageQRCode />

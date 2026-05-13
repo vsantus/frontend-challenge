@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
 import { GaragePlan } from "../../types/garage.details";
+import { GaragePlanModal } from "./garage-plan-modal";
 import { GaragePlansTable } from "./garage-plans-table";
 
 type GaragePlansSectionProps = {
@@ -16,12 +18,49 @@ export function GaragePlansSection({
   garageId,
   plans,
 }: GaragePlansSectionProps) {
+  const [localPlans, setLocalPlans] = useState(plans);
+  const [selectedPlan, setSelectedPlan] = useState<GaragePlan | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
   function handleCreatePlan() {
-    console.log("Abrir modal de novo plano", garageId);
+    setSelectedPlan(null);
+    setIsCreateModalOpen(true);
   }
 
   function handleEditPlan(planId: string) {
-    console.log("Abrir modal de edição do plano", planId);
+    const plan = localPlans.find((currentPlan) => currentPlan.id === planId);
+
+    if (!plan) {
+      return;
+    }
+
+    setSelectedPlan(plan);
+    setIsEditModalOpen(true);
+  }
+
+  function handleCloseEditModal() {
+    setIsEditModalOpen(false);
+    setSelectedPlan(null);
+  }
+
+  function handleCloseCreateModal() {
+    setIsCreateModalOpen(false);
+  }
+
+  function handleSubmitEditPlan(updatedPlan: GaragePlan) {
+    setLocalPlans((currentPlans) =>
+      currentPlans.map((currentPlan) =>
+        currentPlan.id === updatedPlan.id ? updatedPlan : currentPlan
+      )
+    );
+    handleCloseEditModal();
+  }
+
+  function handleSubmitCreatePlan(newPlan: GaragePlan) {
+    setLocalPlans((currentPlans) => [...currentPlans, newPlan]);
+    console.log("Plano criado para garagem:", garageId, newPlan);
+    handleCloseCreateModal();
   }
 
   return (
@@ -43,7 +82,28 @@ export function GaragePlansSection({
         </Button>
       </div>
 
-      <GaragePlansTable plans={plans} onEditPlan={handleEditPlan} />
+      <GaragePlansTable plans={localPlans} onEditPlan={handleEditPlan} />
+
+      {isEditModalOpen && (
+        <GaragePlanModal
+          key={selectedPlan?.id}
+          mode="edit"
+          open={isEditModalOpen}
+          plan={selectedPlan}
+          onClose={handleCloseEditModal}
+          onSubmit={handleSubmitEditPlan}
+        />
+      )}
+
+      {isCreateModalOpen && (
+        <GaragePlanModal
+          key="create-plan"
+          mode="create"
+          open={isCreateModalOpen}
+          onClose={handleCloseCreateModal}
+          onSubmit={handleSubmitCreatePlan}
+        />
+      )}
     </div>
   );
 }

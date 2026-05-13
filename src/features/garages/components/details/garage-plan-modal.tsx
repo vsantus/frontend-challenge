@@ -7,7 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 
-import { GaragePlan } from "../../types/garage.details";
+import {
+  GaragePlan,
+  GaragePlanFormValues,
+} from "../../types/garage.details";
 
 type GaragePlanModalMode = "create" | "edit";
 
@@ -15,8 +18,9 @@ type GaragePlanModalProps = {
   mode: GaragePlanModalMode;
   open: boolean;
   plan?: GaragePlan | null;
+  loading?: boolean;
   onClose: () => void;
-  onSubmit: (plan: GaragePlan) => void;
+  onSubmit: (plan: GaragePlanFormValues) => void;
 };
 
 type GaragePlanFormState = {
@@ -59,6 +63,7 @@ export function GaragePlanModal({
   mode,
   open,
   plan,
+  loading = false,
   onClose,
   onSubmit,
 }: GaragePlanModalProps) {
@@ -88,14 +93,21 @@ export function GaragePlanModal({
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
+    const vacancies = Number(formState.vacancies);
+    const occupied = plan?.occupied ?? 0;
+
     onSubmit({
       id: plan?.id ?? crypto.randomUUID(),
       description: formState.description,
       value: Number(formState.value),
-      vacancies: Number(formState.vacancies),
-      occupied: plan?.occupied ?? 0,
-      available: Number(formState.vacancies) - (plan?.occupied ?? 0),
+      vacancies,
+      occupied,
+      available: vacancies - occupied,
       status: formState.status,
+      vehicleType: formState.vehicleType,
+      cancellationValue: Number(formState.cancellationValue),
+      startsAt: formState.startsAt,
+      endsAt: formState.endsAt,
     });
   }
 
@@ -119,6 +131,7 @@ export function GaragePlanModal({
           onClick={onClose}
           className="absolute right-5 top-5 text-zinc-700"
           aria-label="Fechar modal de plano"
+          disabled={loading}
         >
           <X size={18} />
         </Button>
@@ -130,6 +143,7 @@ export function GaragePlanModal({
             placeholder="Digite a descrição do plano"
             value={formState.description}
             onChange={(event) => updateField("description", event.target.value)}
+            disabled={loading}
             required
           />
 
@@ -140,6 +154,7 @@ export function GaragePlanModal({
             <label className="flex h-11 items-center gap-3">
               <Switch
                 checked={isActive}
+                disabled={loading}
                 onCheckedChange={(checked) =>
                   updateField("status", checked ? "active" : "inactive")
                 }
@@ -156,8 +171,9 @@ export function GaragePlanModal({
             </span>
             <select
               value={formState.vehicleType}
+              disabled={loading}
               onChange={(event) => updateField("vehicleType", event.target.value)}
-              className="h-11 w-full rounded-md border border-zinc-200 bg-white px-4 text-sm text-zinc-900 outline-none transition focus-visible:ring-2 focus-visible:ring-[#7ad33e]"
+              className="h-11 w-full rounded-md border border-zinc-200 bg-white px-4 text-sm text-zinc-900 outline-none transition focus-visible:ring-2 focus-visible:ring-[#7ad33e] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
             >
               <option value="car">Carro</option>
               <option value="motorcycle">Moto</option>
@@ -172,6 +188,7 @@ export function GaragePlanModal({
             min={0}
             value={formState.vacancies}
             onChange={(event) => updateField("vacancies", event.target.value)}
+            disabled={loading}
             required
           />
 
@@ -183,6 +200,7 @@ export function GaragePlanModal({
             step="0.01"
             value={formState.value}
             onChange={(event) => updateField("value", event.target.value)}
+            disabled={loading}
             required
           />
 
@@ -196,6 +214,7 @@ export function GaragePlanModal({
             onChange={(event) =>
               updateField("cancellationValue", event.target.value)
             }
+            disabled={loading}
           />
 
           <Input
@@ -204,6 +223,8 @@ export function GaragePlanModal({
             type="date"
             value={formState.startsAt}
             onChange={(event) => updateField("startsAt", event.target.value)}
+            disabled={loading}
+            required
           />
 
           <Input
@@ -212,17 +233,26 @@ export function GaragePlanModal({
             type="date"
             value={formState.endsAt}
             onChange={(event) => updateField("endsAt", event.target.value)}
+            disabled={loading}
+            required
           />
         </div>
 
         <div className="mt-6 flex justify-end gap-2">
-          <Button type="button" variant="outline" size="lg" onClick={onClose}>
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            onClick={onClose}
+            disabled={loading}
+          >
             Cancelar
           </Button>
 
           <Button
             type="submit"
             size="lg"
+            loading={loading}
             className="bg-[#7ad33e] text-white hover:bg-[#6bc733]"
           >
             {submitLabel}

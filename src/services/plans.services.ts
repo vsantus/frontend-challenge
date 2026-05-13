@@ -1,4 +1,5 @@
 import {
+  CreatePlanRequest,
   GaragePlan,
   PlanApiResponse,
 } from "@/src/features/garages/types/garage.details";
@@ -43,4 +44,10 @@ export async function listPlans(garageId: string) {
   });
 
   return response.data.map(mapPlanToViewModel);
+}
+
+export async function createPlan(data: CreatePlanRequest) {
+  const response = await api.post("/plan", data);
+
+  return response.data;
 }

@@ -1,11 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { createPlan } from "@/src/services/plans.services";
 
-import { GaragePlan } from "../../types/garage.details";
+import {
+  CreatePlanRequest,
+  GaragePlan,
+  GaragePlanFormValues,
+} from "../../types/garage.details";
 import { GaragePlanModal } from "./garage-plan-modal";
 import { GaragePlansTable } from "./garage-plans-table";
 
@@ -14,14 +20,63 @@ type GaragePlansSectionProps = {
   plans: GaragePlan[];
 };
 
+function toCents(value: number) {
+  return String(Math.round(value * 100));
+}
+
+function mapPlanFormToRequest(
+  garageId: string,
+  plan: GaragePlanFormValues
+): CreatePlanRequest {
+  return {
+    id: plan.id,
+    garageId,
+    description: plan.description,
+    startValidity: plan.startsAt,
+    endValidity: plan.endsAt,
+    priceInCents: toCents(plan.value),
+    active: String(plan.status === "active"),
+    descriptionAvailable: plan.description,
+    amountDailyCacellationInCents: toCents(plan.cancellationValue),
+    vehicleType: plan.vehicleType,
+    totalVacancies: plan.vacancies,
+  };
+}
+
+function mapPlanFormToTablePlan(plan: GaragePlanFormValues): GaragePlan {
+  return {
+    id: plan.id,
+    description: plan.description,
+    value: plan.value,
+    vacancies: plan.vacancies,
+    occupied: plan.occupied,
+    available: plan.available,
+    status: plan.status,
+  };
+}
+
 export function GaragePlansSection({
   garageId,
   plans,
 }: GaragePlansSectionProps) {
+  const queryClient = useQueryClient();
   const [localPlans, setLocalPlans] = useState(plans);
   const [selectedPlan, setSelectedPlan] = useState<GaragePlan | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  const createPlanMutation = useMutation({
+    mutationFn: (plan: GaragePlanFormValues) =>
+      createPlan(mapPlanFormToRequest(garageId, plan)),
+    onSuccess: (_, plan) => {
+      setLocalPlans((currentPlans) => [
+        ...currentPlans,
+        mapPlanFormToTablePlan(plan),
+      ]);
+      queryClient.invalidateQueries({ queryKey: ["garage-plans", garageId] });
+      handleCloseCreateModal();
+    },
+  });
 
   function handleCreatePlan() {
     setSelectedPlan(null);
@@ -48,19 +103,19 @@ export function GaragePlansSection({
     setIsCreateModalOpen(false);
   }
 
-  function handleSubmitEditPlan(updatedPlan: GaragePlan) {
+  function handleSubmitEditPlan(updatedPlan: GaragePlanFormValues) {
+    const tablePlan = mapPlanFormToTablePlan(updatedPlan);
+
     setLocalPlans((currentPlans) =>
       currentPlans.map((currentPlan) =>
-        currentPlan.id === updatedPlan.id ? updatedPlan : currentPlan
+        currentPlan.id === tablePlan.id ? tablePlan : currentPlan
       )
     );
     handleCloseEditModal();
   }
 
-  function handleSubmitCreatePlan(newPlan: GaragePlan) {
-    setLocalPlans((currentPlans) => [...currentPlans, newPlan]);
-    console.log("Plano criado para garagem:", garageId, newPlan);
-    handleCloseCreateModal();
+  function handleSubmitCreatePlan(newPlan: GaragePlanFormValues) {
+    createPlanMutation.mutate(newPlan);
   }
 
   return (
@@ -82,6 +137,12 @@ export function GaragePlansSection({
         </Button>
       </div>
 
+      {createPlanMutation.isError && (
+        <p className="mb-4 rounded-md bg-red-50 px-3 py-2 text-sm font-medium text-red-600">
+          Não foi possível criar o plano. Tente novamente.
+        </p>
+      )}
+
       <GaragePlansTable plans={localPlans} onEditPlan={handleEditPlan} />
 
       {isEditModalOpen && (
@@ -100,6 +161,7 @@ export function GaragePlansSection({
           key="create-plan"
           mode="create"
           open={isCreateModalOpen}
+          loading={createPlanMutation.isPending}
           onClose={handleCloseCreateModal}
           onSubmit={handleSubmitCreatePlan}
         />

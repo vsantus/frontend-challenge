@@ -2,16 +2,20 @@ import { LoaderCircle } from "lucide-react";
 
 type LoadingStateProps = {
   label?: string;
+  fullScreen?: boolean;
 };
 
 export function LoadingState({
   label = "Carregando...",
+  fullScreen = true,
 }: LoadingStateProps) {
   return (
     <div
       role="status"
       aria-live="polite"
-      className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#f4f5f6] px-4"
+      className={`flex flex-col items-center justify-center gap-4 px-4 ${
+        fullScreen ? "min-h-screen bg-[#f4f5f6]" : "min-h-full bg-white"
+      }`}
     >
       <div className="flex size-14 items-center justify-center rounded-full bg-white shadow-sm">
         <LoaderCircle

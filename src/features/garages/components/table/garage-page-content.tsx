@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { Card } from "@/components/ui/card";
-import { LoadingState } from "@/src/components/feedback/loading-state";
+import { GaragesTableSkeleton } from "@/src/components/feedback/page-skeletons";
 import { listGarages } from "@/src/services/garage.services";
 
 import { Garage } from "../../types/garage";
@@ -67,9 +67,7 @@ export function GaragePageContent() {
 
             <Card className="overflow-hidden border border-zinc-200 shadow-none">
                 {garagesQuery.isLoading ? (
-                    <div className="min-h-[320px]">
-                        <LoadingState label="Carregando garagens..." fullScreen={false} />
-                    </div>
+                    <GaragesTableSkeleton />
                 ) : garagesQuery.isError ? (
                     <div className="flex min-h-[220px] items-center justify-center px-6 text-center text-sm text-red-600">
                         Não foi possível carregar as garagens. Tente novamente.

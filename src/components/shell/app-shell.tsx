@@ -1,9 +1,6 @@
 import { AuthGuard } from "@/src/features/auth/components/auth-guard";
 
-import { Sidebar } from "../sidebar/sidebar";
-import { Topbar } from "../topbar/topbar";
-
-
+import { ShellFrame } from "./shell-frame";
 
 type Props = {
   children: React.ReactNode;
@@ -14,17 +11,7 @@ export function AppShell({
 }: Props) {
   return (
     <AuthGuard>
-      <div className="flex min-h-screen bg-white">
-        <Sidebar />
-
-        <div className="flex flex-1 flex-col">
-          <Topbar />
-
-          <main className="flex-1 p-8">
-            {children}
-          </main>
-        </div>
-      </div>
+      <ShellFrame>{children}</ShellFrame>
     </AuthGuard>
   );
 }

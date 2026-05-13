@@ -18,7 +18,7 @@ export function GarageDetailsPage({ garageId }: GarageDetailsPageProps) {
     const garage = {
         ...garageDetailsMock,
         id: selectedGarage?.code ?? garageDetailsMock.id,
-        code: selectedGarage?.code ?? garageDetailsMock.code,
+        code: selectedGarage?.code ?? garageId,
         name: selectedGarage?.name ?? garageDetailsMock.name,
         address: selectedGarage?.address ?? garageDetailsMock.address,
         regional: selectedGarage?.regional ?? garageDetailsMock.regional,

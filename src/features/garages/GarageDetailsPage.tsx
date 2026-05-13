@@ -1,8 +1,12 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
+
+import { GarageDetailsPageSkeleton } from "@/src/components/feedback/page-skeletons";
+import { getGarageDetails } from "@/src/services/garage.services";
+import { listPlans } from "@/src/services/plans.services";
+
 import { AuthGuard } from "../auth/components/auth-guard";
-import { garageDetailsMock } from "./data/garage-details.mock";
-import { garagesMock } from "./data/garage.mock";
 
 import { GarageDetailsHeader } from "./components/details/garage-details-header";
 import { GarageInfoTabs } from "./components/details/garage-info-tabs";
@@ -15,35 +19,66 @@ type GarageDetailsPageProps = {
 };
 
 export function GarageDetailsPage({ garageId }: GarageDetailsPageProps) {
-    const selectedGarage = garagesMock.find((garage) => garage.code === garageId);
-    const garage = {
-        ...garageDetailsMock,
-        id: selectedGarage?.code ?? garageDetailsMock.id,
-        code: selectedGarage?.code ?? garageId,
-        name: selectedGarage?.name ?? garageDetailsMock.name,
-        address: selectedGarage?.address ?? garageDetailsMock.address,
-        regional: selectedGarage?.regional ?? garageDetailsMock.regional,
-    };
+    const garageQuery = useQuery({
+        queryKey: ["garage", garageId],
+        queryFn: () => getGarageDetails(garageId),
+    });
+
+    const plansQuery = useQuery({
+        queryKey: ["garage-plans", garageId],
+        queryFn: () => listPlans(garageId),
+    });
+
+    const isLoading = garageQuery.isLoading || plansQuery.isLoading;
+    const hasError = garageQuery.isError || plansQuery.isError;
+    const garage = garageQuery.data && plansQuery.data
+        ? {
+            ...garageQuery.data,
+            plans: plansQuery.data,
+        }
+        : null;
+
+    if (isLoading) {
+        return (
+            <AuthGuard>
+                <GarageDetailsPageSkeleton />
+            </AuthGuard>
+        );
+    }
+
+    if (hasError || !garage) {
+        return (
+            <AuthGuard>
+                <div className="fixed inset-0 z-50 bg-zinc-950/75">
+                    <main className="fixed inset-y-0 right-0 left-20 flex items-center justify-center overflow-y-auto bg-white px-8 py-6 shadow-[-18px_0_32px_rgba(15,23,42,0.28)]">
+                        <p className="text-sm font-medium text-red-600">
+                            Não foi possível carregar os dados da garagem.
+                        </p>
+                    </main>
+                </div>
+            </AuthGuard>
+        );
+    }
 
     return (
         <AuthGuard>
-        <div className="fixed inset-0 z-50 bg-zinc-950/75">
-            <main className="fixed inset-y-0 right-0 left-20 overflow-y-auto bg-white px-8 py-6 shadow-[-18px_0_32px_rgba(15,23,42,0.28)]">
-                <GarageDetailsHeader garage={garage} />
+            <div className="fixed inset-0 z-50 bg-zinc-950/75">
+                <main className="fixed inset-y-0 right-0 left-20 overflow-y-auto bg-white px-8 py-6 shadow-[-18px_0_32px_rgba(15,23,42,0.28)]">
+                    <GarageDetailsHeader garage={garage} />
 
-                <div className="mt-6">
-                    <GarageInfoTabs />
-                </div>
+                    <div className="mt-6">
+                        <GarageInfoTabs />
+                    </div>
 
-                <section className="mt-5 flex items-center gap-4">
-                    <GarageStatsCards garage={garage} />
+                    <section className="mt-5 flex items-center gap-4">
+                        <GarageStatsCards garage={garage} />
 
-                    <GarageQRCode />
-                </section>
+                        <GarageQRCode />
+                    </section>
 
-                <GaragePlansPanel garageId={garageId} plans={garage.plans} />
-            </main>
-        </div>
+                    <GaragePlansPanel garageId={garageId} plans={garage.plans} />
+                </main>
+            </div>
         </AuthGuard>
     );
 }

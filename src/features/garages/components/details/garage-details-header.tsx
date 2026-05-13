@@ -27,7 +27,7 @@ export function GarageDetailsHeader({ garage }: GarageDetailsHeaderProps) {
         </div>
 
         <p className="mt-4 text-[15px] leading-none text-zinc-500">
-          Código: {garage.code} -
+          Código: {garage.code} 
         </p>
 
         <div className="mt-8 space-y-4 text-[15px] leading-none text-zinc-500">

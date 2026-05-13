@@ -5,7 +5,7 @@ import { Car } from "lucide-react";
 import { MaintenanceState } from "@/src/components/feedback/feedback-maintenance";
 
 import { AppShell } from "../../components/shell/app-shell";
-import { PageHeader } from "../dashboard/components/dashboard-header";
+import { PageHeader } from "../../components/shell/page-header";
 
 export default function PlansPage() {
     return (

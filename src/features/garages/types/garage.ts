@@ -4,7 +4,6 @@ export type Garage = {
     address: string;
     cityUf: string;
     regional: string;
-    monthlyDigital?: boolean;
 };
 
 export type GarageApiItem = {

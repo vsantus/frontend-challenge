@@ -3,8 +3,8 @@ export type GaragePlan = {
   description: string;
   value: number;
   vacancies: number;
-  occupied: number;
-  available: number;
+  occupied?: number;
+  available?: number;
   status: "active" | "inactive";
 };
 
@@ -31,7 +31,7 @@ export type CreatePlanRequest = {
   priceInCents: string;
   active: string;
   descriptionAvailable: string;
-  amountDailyCacellationInCents: string;
+  amountDailyCancellationInCents: string;
   vehicleType: string;
   totalVacancies: number;
 };
@@ -47,8 +47,11 @@ export type PlanApiResponse = {
   priceInCents: string | number;
   active: string | boolean;
   descriptionAvailable: string;
-  amountDailyCacellationInCents?: string;
   amountDailyCancellationInCents?: string | number;
+  occupiedVacancies?: string | number;
+  availableVacancies?: string | number;
+  occupied?: string | number;
+  available?: string | number;
   veichleType?: string | number;
   VeichleType?: string | number;
   vehicleType?: string;
@@ -65,7 +68,6 @@ export type GarageDetails = {
   totalVacancies: number;
   occupiedVacancies: number;
   availableVacancies: number;
-  plans: GaragePlan[];
 };
 
 export type GarageDetailsApiResponse = {

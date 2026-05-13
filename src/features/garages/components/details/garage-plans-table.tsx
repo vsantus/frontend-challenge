@@ -34,6 +34,10 @@ function formatCurrency(value: number) {
   }).format(value);
 }
 
+function formatNumber(value: number | undefined) {
+  return value ?? "-";
+}
+
 export function GaragePlansTable({
   plans,
   onEditPlan,
@@ -84,8 +88,12 @@ export function GaragePlansTable({
                 {formatCurrency(plan.value)}
               </TableCell>
               <TableCell className="px-4 py-3">{plan.vacancies}</TableCell>
-              <TableCell className="px-4 py-3">{plan.occupied}</TableCell>
-              <TableCell className="px-4 py-3">{plan.available}</TableCell>
+              <TableCell className="px-4 py-3">
+                {formatNumber(plan.occupied)}
+              </TableCell>
+              <TableCell className="px-4 py-3">
+                {formatNumber(plan.available)}
+              </TableCell>
 
               <TableCell className="px-4 py-3">
                 <span

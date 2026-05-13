@@ -1,7 +1,7 @@
 import { Building2, Car } from "lucide-react";
 import { AppShell } from "../../components/shell/app-shell";
+import { PageHeader } from "../../components/shell/page-header";
 import { DashboardFeatureCard } from "./components/dashboard-card";
-import { PageHeader } from "./components/dashboard-header";
 
 export default function DashboardPage() {
     return (

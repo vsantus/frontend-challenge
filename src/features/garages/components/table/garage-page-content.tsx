@@ -15,7 +15,6 @@ import { GaragesTableHeader } from "./garages-table-header";
 export function GaragePageContent() {
     const router = useRouter();
     const [search, setSearch] = useState("");
-    const [monthlyDigitalEnabled, setMonthlyDigitalEnabled] = useState(true);
     const normalizedSearch = search.trim().toLowerCase();
 
     const garagesQuery = useQuery({
@@ -41,13 +40,9 @@ export function GaragePageContent() {
                 ].some((value) => value.toLowerCase().includes(normalizedSearch))
                 : true;
 
-            const matchesMonthlyDigital = monthlyDigitalEnabled
-                ? garage.monthlyDigital !== false
-                : true;
-
-            return matchesSearch && matchesMonthlyDigital;
+            return matchesSearch;
         });
-    }, [garagesQuery.data?.data, monthlyDigitalEnabled, normalizedSearch]);
+    }, [garagesQuery.data?.data, normalizedSearch]);
 
     function handleViewGarage(garage: Garage) {
         router.push(`/garages/${garage.code}`);
@@ -60,8 +55,6 @@ export function GaragePageContent() {
                     total={filteredGarages.length}
                     search={search}
                     onSearchChange={setSearch}
-                    monthlyDigitalEnabled={monthlyDigitalEnabled}
-                    onMonthlyDigitalChange={setMonthlyDigitalEnabled}
                 />
             </Card>
 

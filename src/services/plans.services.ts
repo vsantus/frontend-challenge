@@ -14,6 +14,14 @@ function parseNumber(value: string | number | undefined) {
   return Number(value);
 }
 
+function parseOptionalNumber(value: string | number | undefined) {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  return Number(value);
+}
+
 function parseActive(value: string | boolean) {
   if (typeof value === "boolean") {
     return value;
@@ -24,14 +32,18 @@ function parseActive(value: string | boolean) {
 
 function mapPlanToViewModel(plan: PlanApiResponse): GaragePlan {
   const vacancies = Number(plan.totalVacancies);
+  const occupied = parseOptionalNumber(plan.occupiedVacancies ?? plan.occupied);
+  const available =
+    parseOptionalNumber(plan.availableVacancies ?? plan.available) ??
+    (occupied === undefined ? undefined : vacancies - occupied);
 
   return {
     id: String(plan.id ?? plan.idPlan),
     description: plan.description,
     value: parseNumber(plan.priceInCents) / 100,
     vacancies,
-    occupied: 0,
-    available: vacancies,
+    occupied,
+    available,
     status: parseActive(plan.active) ? "active" : "inactive",
   };
 }

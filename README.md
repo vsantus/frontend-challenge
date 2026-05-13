@@ -46,7 +46,7 @@ Utilize as credenciais a seguir para autenticar na API mockada (quando necessár
 
 - Usuário: `estapar`
 - Senha: `@estapar@`
-- URL API mocada: [https://mock.apidog.com/m1/1022746-1009361-default](https://mock.apidog.com/m1/1022746-1009361-default)
+- Configure `NEXT_PUBLIC_API_URL` com a URL da API mockada.
 - Documentação da API: [https://c6wu4yjlku.apidog.io](https://c6wu4yjlku.apidog.io)
 
 Ao autenticar, será devolvido um token que deverá ser enviado nas demais requisições aos endpoints. O token deve ser enviado como Bearer Token.

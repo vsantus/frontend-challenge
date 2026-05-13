@@ -10,6 +10,9 @@ export const metadata = {
   title: "Estapar B2B",
   description:
     "Maior rede de estacionamentos da America Latina e lider em mobilidade urbana no Brasil",
+  icons: {
+    icon: "/logo-min.png",
+  },
 };
 
 export default function RootLayout({

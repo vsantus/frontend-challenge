@@ -19,7 +19,6 @@ function mapGarageToViewModel(garage: GaragePaginatedList["data"][number]): Gara
     address: garage.address,
     cityUf: `${garage.city}/${garage.state}`,
     regional: garage.region,
-    monthlyDigital: true,
   };
 }
 
@@ -34,7 +33,6 @@ function mapGarageDetailsToViewModel(garage: GarageDetailsApiResponse): GarageDe
     totalVacancies: garage.countSpaces,
     occupiedVacancies: garage.occupiedSpaces,
     availableVacancies: garage.countSpaces - garage.occupiedSpaces,
-    plans: [],
   };
 }
 

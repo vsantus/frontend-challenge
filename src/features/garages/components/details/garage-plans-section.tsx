@@ -37,7 +37,7 @@ function mapPlanFormToRequest(
     priceInCents: toCents(plan.value),
     active: String(plan.status === "active"),
     descriptionAvailable: plan.description,
-    amountDailyCacellationInCents: toCents(plan.cancellationValue),
+    amountDailyCancellationInCents: toCents(plan.cancellationValue),
     vehicleType: plan.vehicleType,
     totalVacancies: plan.vacancies,
   };

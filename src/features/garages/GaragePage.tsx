@@ -1,7 +1,7 @@
 import { Building2 } from "lucide-react";
 import { AppShell } from "../../components/shell/app-shell";
 import { PageHeader } from "../dashboard/components/dashboard-header";
-import { GaragePageContent } from "./components/garage-page-content";
+import { GaragePageContent } from "./components/table/garage-page-content";
 
 export default async function Garage() {
     return (

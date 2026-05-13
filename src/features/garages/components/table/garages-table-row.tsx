@@ -1,9 +1,10 @@
+"use client";
+
 import { Eye } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
-
-import { Garage } from "../types/garage";
+import { Garage } from "../../types/garage";
 
 type GaragesTableRowProps = {
     garage: Garage;
@@ -14,6 +15,10 @@ export function GaragesTableRow({
     garage,
     onViewGarage,
 }: GaragesTableRowProps) {
+    function handleViewGarage() {
+        onViewGarage(garage);
+    }
+
     return (
         <TableRow className="border-zinc-200">
             <TableCell className="text-xs text-zinc-700">
@@ -42,7 +47,7 @@ export function GaragesTableRow({
                     variant="ghost"
                     size="icon"
                     className="h-8 w-8 text-zinc-700 hover:bg-zinc-100"
-                    onClick={() => onViewGarage(garage)}
+                    onClick={handleViewGarage}
                     aria-label={`Visualizar detalhes de ${garage.name}`}
                 >
                     <Eye size={16} />

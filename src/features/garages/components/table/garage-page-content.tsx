@@ -1,15 +1,17 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
 import { Card } from "@/components/ui/card";
 
-import { Garage } from "../types/garage";
+import { Garage } from "../../types/garage";
 import { GaragesTable } from "./garages-table";
 import { GaragesTableHeader } from "./garages-table-header";
-import { garagesMock } from "../data/garage.mock";
+import { garagesMock } from "../../data/garage.mock";
 
 export function GaragePageContent() {
+    const router = useRouter();
     const [search, setSearch] = useState("");
     const [monthlyDigitalEnabled, setMonthlyDigitalEnabled] = useState(true);
 
@@ -41,7 +43,7 @@ export function GaragePageContent() {
     }, [search, monthlyDigitalEnabled]);
 
     function handleViewGarage(garage: Garage) {
-        console.log("Visualizar garagem:", garage);
+        router.push(`/garages/${garage.code}`);
     }
 
     return (

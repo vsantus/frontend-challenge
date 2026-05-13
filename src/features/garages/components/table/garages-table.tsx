@@ -6,7 +6,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 
-import { Garage } from "../types/garage";
+import { Garage } from "../../types/garage";
 import { GaragesEmptyState } from "./garages-empty-state";
 import { GaragesTableRow } from "./garages-table-row";
 

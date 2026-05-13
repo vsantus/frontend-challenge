@@ -58,6 +58,17 @@ function Button({
     loading?: boolean
   }) {
   const Comp = asChild ? Slot : "button"
+  const content = asChild ? (
+    children
+  ) : (
+    <>
+      {loading && (
+        <LoaderCircle className="size-4 animate-spin" />
+      )}
+
+      {children}
+    </>
+  )
 
   return (
     <Comp
@@ -68,13 +79,7 @@ function Button({
       disabled={disabled || loading}
       {...props}
     >
-
-      {loading && (
-        <LoaderCircle className="size-4 animate-spin" />
-      )}
-
-      {children}
-
+      {content}
     </Comp>
   )
 }

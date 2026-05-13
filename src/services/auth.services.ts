@@ -51,7 +51,10 @@ export async function authenticate(data: LoginRequest) {
   try {
     const response = await api.post<LoginResponse>("/Authenticate", data);
 
-    return response.data.data;
+    return {
+      ...response.data.data,
+      userName: response.data.originReturn,
+    };
   } catch (error) {
     throw new AuthError(getAuthErrorMessage(error));
   }

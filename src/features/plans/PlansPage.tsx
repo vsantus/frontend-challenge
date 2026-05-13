@@ -1,11 +1,13 @@
 "use client";
 
-import { AppShell } from "../../components/shell/app-shell";
-import { PageHeader } from "../dashboard/components/dashboard-header";
 import { Car } from "lucide-react";
+
 import { MaintenanceState } from "@/src/components/feedback/feedback-maintenance";
 
-export default async function PlansPage() {
+import { AppShell } from "../../components/shell/app-shell";
+import { PageHeader } from "../dashboard/components/dashboard-header";
+
+export default function PlansPage() {
     return (
         <AppShell>
             <PageHeader

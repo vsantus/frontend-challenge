@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { GarageDetailsPageSkeleton } from "@/src/components/feedback/page-skeletons";
@@ -19,6 +20,16 @@ type GarageDetailsPageProps = {
 };
 
 export function GarageDetailsPage({ garageId }: GarageDetailsPageProps) {
+    const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        const frame = requestAnimationFrame(() => {
+            setIsVisible(true);
+        });
+
+        return () => cancelAnimationFrame(frame);
+    }, []);
+
     const garageQuery = useQuery({
         queryKey: ["garage", garageId],
         queryFn: () => getGarageDetails(garageId),
@@ -31,12 +42,14 @@ export function GarageDetailsPage({ garageId }: GarageDetailsPageProps) {
 
     const isLoading = garageQuery.isLoading || plansQuery.isLoading;
     const hasError = garageQuery.isError || plansQuery.isError;
-    const garage = garageQuery.data && plansQuery.data
-        ? {
-            ...garageQuery.data,
-            plans: plansQuery.data,
-        }
-        : null;
+
+    const garage =
+        garageQuery.data && plansQuery.data
+            ? {
+                  ...garageQuery.data,
+                  plans: plansQuery.data,
+              }
+            : null;
 
     if (isLoading) {
         return (
@@ -49,8 +62,19 @@ export function GarageDetailsPage({ garageId }: GarageDetailsPageProps) {
     if (hasError || !garage) {
         return (
             <AuthGuard>
-                <div className="fixed inset-0 z-50 bg-zinc-950/75">
-                    <main className="fixed inset-y-0 right-0 left-20 flex items-center justify-center overflow-y-auto bg-white px-8 py-6 shadow-[-18px_0_32px_rgba(15,23,42,0.28)]">
+                <div
+                    className={`fixed inset-0 z-50 bg-zinc-950/75 transition-opacity duration-300 ease-out ${isVisible ? "opacity-100" : "opacity-0"}`}
+                >
+                    <main
+                        className={`
+                            fixed inset-y-0 right-0 left-20
+                            flex items-center justify-center
+                            overflow-y-auto bg-white px-8 py-6
+                            shadow-[-18px_0_32px_rgba(15,23,42,0.28)]
+                            transition-transform duration-300 ease-out
+                            ${isVisible ? "translate-x-0" : "translate-x-full"}
+                        `}
+                    >
                         <p className="text-sm font-medium text-red-600">
                             Não foi possível carregar os dados da garagem.
                         </p>
@@ -62,8 +86,18 @@ export function GarageDetailsPage({ garageId }: GarageDetailsPageProps) {
 
     return (
         <AuthGuard>
-            <div className="fixed inset-0 z-50 bg-zinc-950/75">
-                <main className="fixed inset-y-0 right-0 left-20 overflow-y-auto bg-white px-8 py-6 shadow-[-18px_0_32px_rgba(15,23,42,0.28)]">
+            <div
+                className={`fixed inset-0 z-50 bg-zinc-950/75 transition-opacity duration-300 ease-out ${isVisible ? "opacity-100" : "opacity-0"}`}
+            >
+                <main
+                    className={`
+                        fixed inset-y-0 right-0 left-20
+                        overflow-y-auto bg-white px-8 py-6
+                        shadow-[-18px_0_32px_rgba(15,23,42,0.28)]
+                        transition-transform duration-500 ease-out
+                        ${isVisible ? "translate-x-0" : "translate-x-full"}
+                    `}
+                >
                     <GarageDetailsHeader garage={garage} />
 
                     <div className="mt-6">
@@ -76,7 +110,10 @@ export function GarageDetailsPage({ garageId }: GarageDetailsPageProps) {
                         <GarageQRCode />
                     </section>
 
-                    <GaragePlansPanel garageId={garageId} plans={garage.plans} />
+                    <GaragePlansPanel
+                        garageId={garageId}
+                        plans={garage.plans}
+                    />
                 </main>
             </div>
         </AuthGuard>

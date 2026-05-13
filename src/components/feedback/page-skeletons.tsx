@@ -94,8 +94,8 @@ export function PlansPageSkeleton() {
 
 export function GarageDetailsPageSkeleton() {
   return (
-    <div className="fixed inset-0 z-50 bg-zinc-950/75">
-      <main className="fixed inset-y-0 right-0 left-20 overflow-y-auto bg-white px-8 py-6 shadow-[-18px_0_32px_rgba(15,23,42,0.28)]">
+    <div className="fixed inset-0 z-50 bg-zinc-950/75 animate-in fade-in duration-300">
+      <main className="fixed inset-y-0 right-0 left-20 overflow-y-auto bg-white px-8 py-6 shadow-[-18px_0_32px_rgba(15,23,42,0.28)] animate-in slide-in-from-right duration-300 ease-out">
         <div className="space-y-7">
           <div className="space-y-5">
             <div className="flex items-center gap-6">

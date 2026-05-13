@@ -2,27 +2,35 @@
 
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import { Card } from "@/components/ui/card";
+import { LoadingState } from "@/src/components/feedback/loading-state";
+import { listGarages } from "@/src/services/garage.services";
 
 import { Garage } from "../../types/garage";
 import { GaragesTable } from "./garages-table";
 import { GaragesTableHeader } from "./garages-table-header";
-import { garagesMock } from "../../data/garage.mock";
 
 export function GaragePageContent() {
     const router = useRouter();
     const [search, setSearch] = useState("");
     const [monthlyDigitalEnabled, setMonthlyDigitalEnabled] = useState(true);
+    const normalizedSearch = search.trim().toLowerCase();
+
+    const garagesQuery = useQuery({
+        queryKey: ["garages"],
+        queryFn: () =>
+            listGarages({
+                currentPage: 1,
+                pageSize: 25,
+            }),
+    });
 
     const filteredGarages = useMemo(() => {
-        const garagesByCode = new Map(
-            garagesMock.map((garage) => [garage.code, garage])
-        );
-        const uniqueGarages = Array.from(garagesByCode.values());
-        const normalizedSearch = search.trim().toLowerCase();
+        const garages = garagesQuery.data?.data ?? [];
 
-        return uniqueGarages.filter((garage) => {
+        return garages.filter((garage) => {
             const matchesSearch = normalizedSearch
                 ? [
                     garage.code,
@@ -30,17 +38,16 @@ export function GaragePageContent() {
                     garage.address,
                     garage.cityUf,
                     garage.regional,
-                ]
-                    .some((value) => value.toLowerCase().includes(normalizedSearch))
+                ].some((value) => value.toLowerCase().includes(normalizedSearch))
                 : true;
 
             const matchesMonthlyDigital = monthlyDigitalEnabled
-                ? garage.monthlyDigital
+                ? garage.monthlyDigital !== false
                 : true;
 
             return matchesSearch && matchesMonthlyDigital;
         });
-    }, [search, monthlyDigitalEnabled]);
+    }, [garagesQuery.data?.data, monthlyDigitalEnabled, normalizedSearch]);
 
     function handleViewGarage(garage: Garage) {
         router.push(`/garages/${garage.code}`);
@@ -59,10 +66,20 @@ export function GaragePageContent() {
             </Card>
 
             <Card className="overflow-hidden border border-zinc-200 shadow-none">
-                <GaragesTable
-                    garages={filteredGarages}
-                    onViewGarage={handleViewGarage}
-                />
+                {garagesQuery.isLoading ? (
+                    <div className="min-h-[320px]">
+                        <LoadingState label="Carregando garagens..." fullScreen={false} />
+                    </div>
+                ) : garagesQuery.isError ? (
+                    <div className="flex min-h-[220px] items-center justify-center px-6 text-center text-sm text-red-600">
+                        Não foi possível carregar as garagens. Tente novamente.
+                    </div>
+                ) : (
+                    <GaragesTable
+                        garages={filteredGarages}
+                        onViewGarage={handleViewGarage}
+                    />
+                )}
             </Card>
         </div>
     );

@@ -2,23 +2,36 @@
 
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 
 type GaragesTableHeaderProps = {
     total: number;
     search: string;
+    monthlyEnabled: boolean;
     onSearchChange: (value: string) => void;
+    onMonthlyEnabledChange: (checked: boolean) => void;
 };
 
 export function GaragesTableHeader({
     total,
     search,
+    monthlyEnabled,
     onSearchChange,
+    onMonthlyEnabledChange,
 }: GaragesTableHeaderProps) {
     return (
         <div className="flex flex-col gap-3 border-zinc-200 px-2 py-2 md:flex-row md:items-center md:justify-between md:px-4 md:py-3">
-            <span className="text-sm font-medium text-zinc-800">
-                Mensalista Digital
-            </span>
+            <label className="flex items-center gap-3">
+                <Switch
+                    checked={monthlyEnabled}
+                    onCheckedChange={onMonthlyEnabledChange}
+                    aria-label="Alternar mensalista digital"
+                />
+
+                <span className="text-sm font-medium text-zinc-800">
+                    Mensalista Digital
+                </span>
+            </label>
 
             <span className="text-sm text-zinc-500 md:text-center">
                 {total} registros

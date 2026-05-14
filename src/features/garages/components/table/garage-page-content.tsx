@@ -16,6 +16,7 @@ const DETAILS_EXIT_ANIMATION_MS = 500;
 
 export function GaragePageContent() {
     const [search, setSearch] = useState("");
+    const [monthlyEnabled, setMonthlyEnabled] = useState(true);
     const [selectedGarageId, setSelectedGarageId] = useState<string | null>(null);
     const [isClosingDetails, setIsClosingDetails] = useState(false);
     const normalizedSearch = search.trim().toLowerCase();
@@ -68,7 +69,9 @@ export function GaragePageContent() {
                     <GaragesTableHeader
                         total={filteredGarages.length}
                         search={search}
+                        monthlyEnabled={monthlyEnabled}
                         onSearchChange={setSearch}
+                        onMonthlyEnabledChange={setMonthlyEnabled}
                     />
                 </Card>
 

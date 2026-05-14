@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   LogOut,
@@ -9,18 +8,10 @@ import {
 
 import {
   clearSession,
-  getSessionUserName,
 } from "@/src/features/auth/utils/session";
 
 export function Topbar() {
   const router = useRouter();
-  const [userName] = useState(() => {
-    if (typeof window === "undefined") {
-      return "Roberto Freitas";
-    }
-
-    return getSessionUserName();
-  });
 
   function handleLogout() {
     clearSession();
@@ -40,7 +31,7 @@ export function Topbar() {
           <User className="size-4" />
 
           <span className="text-sm font-medium">
-            {userName}
+            {'Roberto Freitas'}
           </span>
         </div>
 
